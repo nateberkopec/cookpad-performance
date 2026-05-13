@@ -1,11 +1,11 @@
 require "spec_helper"
 require "active_support/railtie"
 require "active_record/railtie"
+require "active_job/railtie"
 require "action_controller/railtie"
 require "action_view/railtie"
 require "action_mailer/railtie"
 require "sprockets/railtie"
-require "uglifier"
 
 RSpec.describe "Profile mode" do
   context "when ENV variable PROFILE is 'true'" do
@@ -38,6 +38,17 @@ RSpec.describe "Profile mode" do
       }.from(:debug).to(:info)
     end
 
+    it "allows LOG_LEVEL to override the profile default" do
+      set_environment_variable("LOG_LEVEL", "warn")
+      set_test_app_configuration(:log_level, :debug)
+
+      expect { load_initializer! }.to change {
+        test_app.config.log_level
+      }.from(:debug).to(:warn)
+    ensure
+      set_environment_variable("LOG_LEVEL", nil)
+    end
+
     it "sets active_record.verbose_query_logs to false" do
       set_test_app_configuration(:active_record, :verbose_query_logs, true)
 
@@ -62,24 +73,15 @@ RSpec.describe "Profile mode" do
       }.from(false).to(true)
     end
 
-    it "sets public_file_server.headers to Hash of values" do
+    it "sets public_file_server.headers to far-future cache headers" do
       set_test_app_configuration(:public_file_server, :headers, {})
 
       expect { load_initializer! }.to change {
         test_app.config.public_file_server.headers
       }.from({}).to({
         "Cache-Control" => "max-age=315360000, public",
-        "Expires" => "Tue, 31 Dec 2030 23:55:55 GMT"
+        "Expires" => "Thu, 31 Dec 2037 23:55:55 GMT"
       })
-    end
-
-    it "sets assets.js_compressor to Uglifier.new(harmony: true)" do
-      set_test_app_configuration(:assets, :js_compressor, nil)
-
-      expect { load_initializer! }.to change {
-        test_app.config.assets.js_compressor
-      }.from(nil)
-      expect(test_app.config.assets.js_compressor).to be_a(Uglifier)
     end
 
     it "sets assets.compile to false" do
@@ -114,20 +116,20 @@ RSpec.describe "Profile mode" do
       }.from(false).to(true)
     end
 
-    it "sets action_mailer.perform_caching to true" do
-      set_test_app_configuration(:action_mailer, :perform_caching, false)
-
-      expect { load_initializer! }.to change {
-        test_app.config.action_mailer.perform_caching
-      }.from(false).to(true)
-    end
-
-    it "sets action_controller.enable_fragment_cache_logging to true" do
-      set_test_app_configuration(:action_controller, :enable_fragment_cache_logging, false)
+    it "sets action_controller.enable_fragment_cache_logging to false" do
+      set_test_app_configuration(:action_controller, :enable_fragment_cache_logging, true)
 
       expect { load_initializer! }.to change {
         test_app.config.action_controller.enable_fragment_cache_logging
-      }.from(false).to(true)
+      }.from(true).to(false)
+    end
+
+    it "sets action_mailer.perform_caching to false" do
+      set_test_app_configuration(:action_mailer, :perform_caching, true)
+
+      expect { load_initializer! }.to change {
+        test_app.config.action_mailer.perform_caching
+      }.from(true).to(false)
     end
 
     it "sets action_view.cache_template_loading to true" do
@@ -144,6 +146,14 @@ RSpec.describe "Profile mode" do
       expect { load_initializer! }.to change {
         test_app.config.action_view.annotate_rendered_view_with_filenames
       }.from(true).to(false)
+    end
+
+    it "sets action_view.logger to nil" do
+      set_test_app_configuration(:action_view, :logger, Logger.new($stdout))
+
+      expect { load_initializer! }.to change {
+        test_app.config.action_view.logger
+      }.to(nil)
     end
 
     it "sets log_tags to [:request_id]" do

@@ -21,6 +21,7 @@ module ActiveRecord
       "PRAGMA",
       "SELECT column_name",
       "SELECT sqlite_version(*)",
+      "SELECT name FROM pragma_table_list",
       "SELECT name FROM sqlite_master",
       "SELECT sql FROM",
       "SELECT table_name",

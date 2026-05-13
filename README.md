@@ -59,6 +59,10 @@ Run your Rails application in a production-like configuration of the development
 
 Activate by setting an environment variable called `PROFILE=true`.
 
+Profile mode disables reloading and development-only request overhead, enables eager loading and caching, disables noisy query/view logging, removes the Prometheus Rack exporter middleware when present, and expects assets to be precompiled.
+
+For Shakapacker apps, add a `config/shakapacker.profile.yml` file with production-like settings such as `compile: false` and `cache_manifest: true`. When that file exists, profile mode sets `SHAKAPACKER_CONFIG` to use it.
+
 See [the initializer file](config/initializers/profile_mode.rb) for more information.
 
 ## License
