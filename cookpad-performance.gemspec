@@ -1,6 +1,5 @@
 require_relative "lib/cookpad/performance/version"
 
-# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name        = "cookpad-performance"
   spec.version     = Cookpad::Performance::VERSION
@@ -27,18 +26,22 @@ Gem::Specification.new do |spec|
   spec.add_dependency "prosopite", "~> 1.0"
   spec.add_dependency "rails", ">= 6.1"
 
+  spec.add_development_dependency "base64", "~> 0.3"
+  spec.add_development_dependency "benchmark", "~> 0.5"
   spec.add_development_dependency "byebug", "~> 11.1"
+  spec.add_development_dependency "cgi", "~> 0.5"
+  spec.add_development_dependency "logger", "~> 1.7"
+  spec.add_development_dependency "mutex_m", "~> 0.3"
   spec.add_development_dependency "pronto", "~> 0.11"
   spec.add_development_dependency "pronto-rubocop", "~> 0.11"
   spec.add_development_dependency "rspec", "~> 3.10"
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "rubocop", "~> 1.26"
-  spec.add_development_dependency "rubocop-performance", "~> 1.13"
-  spec.add_development_dependency "rubocop-rails", "~> 2.13"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.9"
+  spec.add_development_dependency "rubocop", "~> 1.86"
+  spec.add_development_dependency "rubocop-performance", "~> 1.26"
+  spec.add_development_dependency "rubocop-rails", "~> 2.35"
+  spec.add_development_dependency "rubocop-rspec", "~> 3.9"
   spec.add_development_dependency "sprockets-rails"
-  spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency "sqlite3", "~> 1.7"
   spec.add_development_dependency "uglifier", "~> 4.2"
   spec.metadata["rubygems_mfa_required"] = "true"
 end
-# rubocop:enable Metrics/BlockLength

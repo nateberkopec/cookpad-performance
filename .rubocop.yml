@@ -1,7 +1,7 @@
 inherit_from:
   - https://raw.githubusercontent.com/cookpad/global-style-guides/main/.rubocop.yml
 
-require:
+plugins:
   - rubocop-rspec
 
 AllCops:
@@ -14,6 +14,9 @@ AllCops:
     - vendor/**/*
     - node_modules/**/*
     - config/deploy.rb
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
 
 Rails/UnknownEnv:
   Environments:

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "logger"
 require "active_record"
 
 # rubocop:disable Rails/ApplicationRecord
@@ -31,7 +32,7 @@ module TestDatabase
   private
 
     def configure_active_record
-      FileUtils.mkdir("./log") unless Dir.exist?("./log")
+      FileUtils.mkdir_p("./log")
       ActiveRecord::Base.logger = ActiveSupport::Logger.new("./log/test.log")
       establish_connection
     end
